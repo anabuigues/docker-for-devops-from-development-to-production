@@ -1,0 +1,6 @@
+Flask==0.10.1
+gunicorn==19.3.0
+
+Flask-SQLAlchemy==2.0
+psycopg2==2.6.1
+flask-redis==0.1.0
