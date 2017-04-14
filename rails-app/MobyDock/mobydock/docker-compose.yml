@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+
+  postgres:
+    image: postgres:9.4.5
+    environment:
+      POSTGRES_USER: mobydock
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - '5432:5432'
+    volumes:
+      - ~/.docker-volumes/mobydock/postgresql/data:/var/lib/postgresql/data
+
+  redis:
+    image: 'redis:3.0-alpine'
+    command: redis-server --requirepass devpassword
+    volumes:
+      - 'redis:/var/lib/redis/data'
+    ports:
+      - '6379:6379'
+
+  website:
+    build: .
+    links:
+      - postgres
+      - redis
+    volumes:
+      - .:/mobydock
+    ports:
+      - '8000:8000'
+    env_file:
+      - .mobydock.env
+
+volumes:
+  redis:
+

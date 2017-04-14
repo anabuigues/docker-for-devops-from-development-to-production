@@ -1,0 +1,8 @@
+<main class="container">
+  <h3><i><%= @message %></i></h3>
+  <%= image_tag 'docker-logo.png', size:'459x261', alt: 'Docker logo' %>
+  
+  <%= link_to 'Feed Moby Dock', root_path(feed: true), class: 'btn' %>
+
+  <p>Moby Dock has been fed <%= @feed_count %> times</p>
+</main>
