@@ -1,0 +1,18 @@
+[Unit]
+Description=Run %p
+Requires=docker.service postgres.service redis.service
+After=docker.service postgres.service redis.service
+
+[Service]
+Restart=always
+User=nick
+ExecStartPre=-/usr/bin/docker kill %p
+ExecStartPre=-/usr/bin/docker rm -f %p
+ExecStart=/usr/bin/docker run -t --rm --name %p \
+  --link redis:redis --link postgres:postgres \
+  --env-file /home/nick/config/.%p.env -p 8000:8000 %p
+ExecStartPost=-/usr/bin/docker stop nginx
+ExecStop=/usr/bin/docker stop %p
+
+[Install]
+WantedBy=multi-user.target nginx.service

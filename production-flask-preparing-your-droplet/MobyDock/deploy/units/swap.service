@@ -1,0 +1,18 @@
+[Unit]
+Description=Turn on swapfile
+
+[Service]
+Type=oneshot
+Environment="SWAPFILE=/2GiB.swap"
+RemainAfterExit=true
+ExecStartPre=/usr/bin/touch ${SWAPFILE}
+ExecStartPre=/usr/bin/fallocate -l 2048m ${SWAPFILE}
+ExecStartPre=/bin/chmod 600 ${SWAPFILE}
+ExecStartPre=/sbin/mkswap ${SWAPFILE}
+ExecStartPre=/sbin/losetup -f ${SWAPFILE}
+ExecStart=/bin/sh -c "/sbin/swapon $(/sbin/losetup -j ${SWAPFILE} | /usr/bin/cut -d : -f 1)"
+ExecStop=/bin/sh -c "/sbin/swapoff $(/sbin/losetup -j ${SWAPFILE} | /usr/bin/cut -d : -f 1)"
+ExecStopPost=/bin/sh -c "/sbin/losetup -d $(/sbin/losetup -j ${SWAPFILE} | /usr/bin/cut -d : -f 1)"
+
+[Install]
+WantedBy=multi-user.target
